@@ -49,13 +49,22 @@ def call_swordphish(apikey,params):
     # Option 3: Calculate stats for MALWARE
 def calculate_stats(type, index, results):
     # Original message
+    if type == 'PHISHING':
+        red_mark = 60
+        yellow_mark = 50
+    elif type == 'DGA':
+        red_mark = 70
+        yellow_mark = 50
+    else:
+        red_mark = 50
+        yellow_mark = 25
     stats = Fore.WHITE + "** " + type + " STATS  **" + "\n"
     scores = [item[index] for item in results]
     green, yellow, red = [],[],[]
     for score in scores:
-        if(int(float(score)*100) > 60): # Definetely not a safe link
+        if(int(float(score)*100) > red_mark): # Definetely not a safe link
             red.append(score)
-        elif(int(float(score)*100) > 40): # Not 100% sure that its safe
+        elif(int(float(score)*100) > yellow_mark): # Not 100% sure that its safe
             yellow.append(score)
         else:
             green.append(score) # Definetely a safe link
