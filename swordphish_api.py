@@ -13,12 +13,13 @@ from extract_urls import *
 
 # Constants that represent the API and the APIKEY
 SWORDPHISH_API = 'https://api.easysol.io/swordphish/'
-SWORDPHISH_APIKEY = '' # Please specify your API KEY
+SWORDPHISH_APIKEY = ''  # Please specify your API KEY
 SAMPLE_DIRECTORY = 'sample/'
 COLS = False
 
-# Function that calls the Swordphish API
+
 def call_swordphish(apikey,params):
+    # Function that calls the Swordphish API
     headers = {'apikey': apikey, 'content-type': 'application/json'} # Assign headers
     r = requests.post(SWORDPHISH_API, data=json.dumps(params), headers=headers) # Makes request to the API
     dga_scores, phishing_score, malware_score, url_list, rank_list = [], [], [], [], []
@@ -43,12 +44,9 @@ def call_swordphish(apikey,params):
     results = zip(url_list, rank_list, phishing_score, dga_scores, malware_score)
     return list(results)
 
-# Function that calculates diffrent stats for certain calculation:
-    # Option 1: Calculate stats for Phishing
-    # Option 2: Calculate stats for DGA
-    # Option 3: Calculate stats for MALWARE
+
 def calculate_stats(type, index, results):
-    # Original message
+    # Function that calculates diffrent stats for certain calculation:
     if type == 'PHISHING':
         red_mark = 60
         yellow_mark = 50
@@ -62,12 +60,12 @@ def calculate_stats(type, index, results):
     scores = [item[index] for item in results]
     green, yellow, red = [],[],[]
     for score in scores:
-        if(int(float(score)*100) > red_mark): # Definetely not a safe link
+        if(int(float(score)*100) > red_mark):  # Definetely not a safe link
             red.append(score)
-        elif(int(float(score)*100) > yellow_mark): # Not 100% sure that its safe
+        elif(int(float(score)*100) > yellow_mark):  # Not 100% sure that its safe
             yellow.append(score)
         else:
-            green.append(score) # Definetely a safe link
+            green.append(score)  # Definetely a safe link
     # Calulates the precentage of links that were definetely unsafe and assings a red color when printed
     red_percent = Fore.RED + str(round(len(red)/len(results)*100,2)) + "% of the links have been categorized as " + type + ".\n"
     # Calulates the precentage of links that were not 100% sure and assings a yellow color when printed
@@ -78,7 +76,9 @@ def calculate_stats(type, index, results):
     stats += red_percent + yellow_percent + green_percent
     return stats
 
+
 def classify(lis):
+    # Function that classifies if the urls if they are phishing or not
     classfied_list = []
     for l in lis:
         if int(float(l[2])*100) > 60:
@@ -87,8 +87,10 @@ def classify(lis):
             tup = l + (0,)
         classfied_list.append(tup)
     return classfied_list
-# Function that puts together all the other methods, and decides type of information is going to be used
+
+
 def initialize(type, column=None):
+    # Function that puts together all the other methods, and decides type of information is going to be used
     if(column == None):
         array = extract_urls_default(SAMPLE_DIRECTORY)
     else:
@@ -116,17 +118,17 @@ def initialize(type, column=None):
     for index_ in index:
         final_array.append(chosen_array.iloc[index_].values.T.tolist()[0])
 
-    start_time = time.time() # starts cofrom colorama import Foreunting time
+    start_time = time.time()  # starts cofrom colorama import Foreunting time
     final_results = []
     for batch in final_array:
         params = {
           "urlArray": batch,
           "force_clf": False
         }
-        results = call_swordphish(SWORDPHISH_APIKEY, params) # calls Swordphish
+        results = call_swordphish(SWORDPHISH_APIKEY, params)  # calls Swordphish
         final_results += results
-    sphish_time = round((time.time()-start_time)*1000,2) # ends the counter
-    avg_query_time = round(sphish_time/length,2) # calculates average time per query
+    sphish_time = round((time.time()-start_time)*1000,2)  # ends the counter
+    avg_query_time = round(sphish_time/length,2)  # calculates average time per query
     print("** SWORDPHISH PROCESS TIMING ** ")
     print("-- Total time elapsed:     " + str(sphish_time) + "ms")
     print("-- Average time per query: " + str(avg_query_time) + "ms")
@@ -139,6 +141,7 @@ def initialize(type, column=None):
     print(malware_stats)
     final_results = classify(final_results)
     return final_results
+
 
 # EXAMPLE FUNCTION TO SHOW WHAT USERS CAN DO WITH THE SOFTWARE
 # Function that has as a parameter a DataFrame with two columns (IP Address, URL)
@@ -158,12 +161,14 @@ def initialize(type, column=None):
 #         print(Fore.RED + str(risky) + "\n")
 #     return results, risk_list
 
+
 def create_csv(results, title):
     df_url = pd.DataFrame(results, columns = ['URL', 'Rank', 'Phishing Score', 'DGA Score', 'Malware Score', "Phishing Classifier"])
     df_url.to_csv('swordphish_' + title + '_results.csv')
 
-# Runs the code
+
 if __name__ == '__main__':
+    # Runs the code
     # Checks if the input has the first argument
     if len(sys.argv) < 1:
         sys.exit("Inputs are missing. Please try again")
