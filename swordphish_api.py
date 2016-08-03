@@ -112,7 +112,7 @@ def initialize(type, column=None):
     for batch in final_array:
         params = {
           "urlArray": batch,
-          "force_clf": True
+          "force_clf": False
         }
         results = call_swordphish(SWORDPHISH_APIKEY, params) # calls Swordphish
         final_results += results
