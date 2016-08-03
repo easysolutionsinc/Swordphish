@@ -90,5 +90,8 @@ intialize(url_array, domains)
     python swordphish_api.py urls 
   ```
 
+## Notebook
+This repo includes a notebook where a user can see step by step how the script runs the code. A user can also see more stats about the efficency and accuracy of the software as well as all different features that Swordphish has. 
+
 ## License
 Copyright (C) Easy Solutions. Apache Licensed. Please refer to LICENSE file.
