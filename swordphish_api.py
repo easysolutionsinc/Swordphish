@@ -113,7 +113,7 @@ def initialize(type, column=None):
 
     final_array = []
     length = chosen_array.shape[0]
-    print("Number of urls being test: " + str(length))
+    print("Number of urls being tested: " + str(length))
     index = np.array_split(np.arange(0,length), math.ceil(length / 1000))
     for index_ in index:
         final_array.append(chosen_array.iloc[index_].values.T.tolist()[0])
@@ -173,7 +173,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 1:
         sys.exit("Inputs are missing. Please try again")
     # Checks if the argument is valid
-    if sys.argv[1] == 'urls' or sys.argv[1] == 'domains':
+    elif sys.argv[1] == 'urls' or sys.argv[1] == 'domains':
         DATA_TYPE = sys.argv[1]
     else:
         sys.exit("First argument is invalid. Options are: urls or domains")
@@ -186,7 +186,7 @@ if __name__ == '__main__':
         else:
             sys.exit("Second arugment is not a number. Please select a valid column number")
 
-    if len(sys.argv) > 3:
+    elif len(sys.argv) > 3:
         sys.exit("Too many inputs. Please try again")
 
     if COLS:
